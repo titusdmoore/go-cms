@@ -1,0 +1,15 @@
+[database]
+host = "127.0.0.1"
+port = "3310"
+username = "root"
+password = "testing"
+databasename = "testing"
+
+[debug]
+enabled = true
+display = false
+log = true
+
+[router]
+port = ":1522"
+adminPath = "/admin"
