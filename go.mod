@@ -1,6 +1,6 @@
 module github.com/titusdmoore/goCms
 
-go 1.21.7
+go 1.22.4
 
 require (
 	github.com/BurntSushi/toml v1.4.0

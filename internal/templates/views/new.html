@@ -1,0 +1,15 @@
+{{ block "table" . }}
+<!DOCTYPE html>
+<html lang="en">
+    {{ template "head" . }}
+    <body>
+        <form>
+            <input name="title" />
+            <textarea name="content" />
+            <button type="submit">
+                Submit
+            </button>
+        </form>
+    </body>
+</html>
+{{ end }}

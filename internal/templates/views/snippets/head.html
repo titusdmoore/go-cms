@@ -1,0 +1,9 @@
+{{ block "head" . }}
+    <head>
+        <title>{{ .PageTitle }}</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ .Host }}/static/css/style.css" rel="stylesheet">
+        <script type="text/javascript" src="{{ .Host }}/static/js/htmx.min.js"></script>
+    </head>
+{{ end }}

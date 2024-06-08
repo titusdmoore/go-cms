@@ -1,0 +1,66 @@
+@import url("./normalize.css");
+@import url("./reset.css");
+
+:root {
+    /* Color Variables */
+    --text: #ebe9fc;
+    --background: #010104;
+    --primary: #3a31d8;
+    --secondary: #020024;
+    --accent: #0600c2;
+
+    /* Spacing */
+    --default-padding: 1rem 1.5rem;
+    --border-radius: 1rem;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background: var(--background);
+    color: var(--text);
+}
+
+.dashboard--navigation {
+    height: 2rem;
+    width: 100%;
+    background: var(--primary);
+}
+
+.dashboard--content-container {
+    height: 100%;
+    width: 100vw;
+    box-sizing: border-box;
+    display: flex;
+
+    aside {
+        background: var(--primary);
+        width: 12rem;
+        height: 8rem;
+        display: inline-block;
+
+        nav {
+            ul {
+                list-style: none;
+                padding: 1rem;
+                margin: 0;
+
+                a {
+                    color: var(--text);
+                    text-decoration: none;
+
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+    }
+
+    main {
+        padding: var(--default-padding);
+    }
+}

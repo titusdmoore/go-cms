@@ -1,0 +1,32 @@
+{{ block "table" . }}
+<!DOCTYPE html>
+<html lang="en">
+    {{ template "head" . }}
+    <body>
+        {{ printf "%#v" . }}
+        <h1>{{ .PageName }}</h1>
+        <a href="{{ .Host }}/pages/new">New {{ .SinglePageName }}</a>
+        <table>
+            <tr>
+                <th>Id</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Publish Date</th>
+                <th>Author</th>
+            </tr>
+            <tr>
+                <td>445</td>
+                <td>Welcome to My wonderful website</td>
+                <td>Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.</td>
+                <td>June 7, 2024</td>
+                <td>Titus Moore</td>
+            </tr>
+        </table>
+
+        <span>{{ .TestingAction }}</span>
+            {{ with .TestingAction }}
+            {{ .TestingAction }}
+            {{ end }}
+    </body>
+</html>
+{{ end }}

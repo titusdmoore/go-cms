@@ -10,8 +10,9 @@ import (
 )
 
 type Router struct {
-	mux    *http.ServeMux
-	routes []Route
+	mux      *http.ServeMux
+	assetMux *http.ServeMux
+	routes   []Route
 }
 
 type Route struct {
@@ -27,10 +28,15 @@ func (router *Router) RegisterRoute(route string, handler func(http.ResponseWrit
 }
 
 func (router *Router) Serve(config config.Config) {
+	// Setup assets router, that allows for direct access to src files
+	assets := http.NewServeMux()
+	assets.Handle("/", http.FileServer(http.Dir("./internal/router/src/static")))
+
 	// Register the routes to the net router mux
 	for _, route := range router.routes {
 		router.mux.HandleFunc(route.route, route.handler)
 	}
+	router.mux.Handle("/static/", http.StripPrefix("/static", assets))
 
 	server := http.Server{
 		Addr:    config.Router.Port,

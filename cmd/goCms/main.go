@@ -1,15 +1,32 @@
 package main
 
 import (
-	"fmt"
-	// "os"
-
-	"html/template"
-	"io"
+	// "io"
 	"net/http"
+	"strings"
 
 	"github.com/titusdmoore/goCms/internal/app"
 )
+
+type Action struct {
+	name string
+}
+
+func (a *Action) Execute() string {
+	return a.name
+}
+
+type PageData struct {
+	PageTitle      string
+	Host           string
+	PageName       string
+	SinglePageName string
+	InternalAction Action
+}
+
+func (p *PageData) TestingAction() string {
+	return "This is a returned string"
+}
 
 func main() {
 	app := app.InitializeProject()
@@ -30,22 +47,36 @@ func main() {
 	//		panic(err)
 	//	}
 
-	app.Router.RegisterRoute("/", func(w http.ResponseWriter, r *http.Request) {
-		io.WriteString(w, "Hello, World!\n")
-	})
+	// app.Router.RegisterRoute("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	io.WriteString(w, "Hello, World!\n")
+	// })
 
 	app.Router.RegisterRoute(app.Config.Router.AdminPath, func(w http.ResponseWriter, r *http.Request) {
-		t, err := template.ParseFiles("./internal/router/src/views/index.html")
-		if err != nil {
-			panic(err)
+		host := strings.ToLower(strings.Split(r.Proto, "/")[0]) + "://" + r.Host
+
+		app.Templates.Render(w, "index", struct {
+			PageTitle string
+			Host      string
+		}{PageTitle: "Welcome to GO CMS", Host: host})
+	})
+
+	app.Router.RegisterRoute(app.Config.Router.AdminPath+"/pages", func(w http.ResponseWriter, r *http.Request) {
+		host := strings.ToLower(strings.Split(r.Proto, "/")[0]) + "://" + r.Host
+
+		pageData := PageData{
+			PageTitle:      "View All Pages",
+			Host:           host,
+			PageName:       "Pages",
+			SinglePageName: "Page",
+			InternalAction: Action{
+				name: "Testing",
+			},
 		}
 
-		err = t.Execute(w, "testing")
-		if err != nil {
-			panic(err)
-		}
-
-		fmt.Println("Gotten here")
+		app.Templates.Render(w, "table", pageData)
+	})
+	app.Router.RegisterRoute(app.Config.Router.AdminPath+"/pages/new", func(w http.ResponseWriter, r *http.Request) {
+		app.Templates.Render(w, "new", nil)
 	})
 
 	app.Router.Serve(app.Config)
