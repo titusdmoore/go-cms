@@ -94,6 +94,7 @@ func Index(pageData templates.TemplatePageData) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		data := reflect.ValueOf(pageData.Data)
+		testingObject := 42
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -102,7 +103,20 @@ func Index(pageData templates.TemplatePageData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body><div><header><nav class=\"dashboard--navigation\"></nav></header><div class=\"dashboard--content-container\"><aside><nav><ul><li><a href=\"/admin/pages\">Pages</a></li></ul></nav></aside><main><h1>Dashboard</h1><p>Welcome to the dashboard</p></main></div></div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body><div><header><nav class=\"dashboard--navigation\"></nav></header><div class=\"dashboard--content-container\"><aside><nav><ul><li><a href=\"/admin/pages\">Pages</a></li></ul></nav></aside><main><h1>Dashboard</h1><p>Welcome to the dashboard</p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(pageData.DoAction("Testing Action", testingObject))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/components.templ`, Line: 42, Col: 76}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main></div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -19,6 +19,7 @@ templ head(host string, pageTitle string) {
 //  @dashboard()
 templ Index(pageData templates.TemplatePageData) {
     {{ data := reflect.ValueOf(pageData.Data) }}
+    {{ testingObject := 42 }}
     <!DOCTYPE html>
     <html lang="en">
             @head(data.FieldByName("Host").Interface().(string), data.FieldByName("PageTitle").Interface().(string))
@@ -38,6 +39,7 @@ templ Index(pageData templates.TemplatePageData) {
                     <main>
                         <h1>Dashboard</h1>
                         <p>Welcome to the dashboard</p>
+                        { pageData.DoAction("Testing Action", testingObject) }
                     </main>
                 </div>
             </div>

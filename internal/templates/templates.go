@@ -29,6 +29,10 @@ type TemplatePageData struct {
 
 func (pd *TemplatePageData) DoAction(action string, opts ...interface{}) string {
 	log.Println("This is running")
+	for _, opt := range opts {
+		fmt.Printf("Option: %v\n", opt)
+	}
+
 	message := fmt.Sprintf("Requested to run action: %s\n", action)
 	return message
 }
