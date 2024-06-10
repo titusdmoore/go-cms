@@ -1,0 +1,46 @@
+package components
+
+import (
+    "reflect"
+    "github.com/titusdmoore/goCms/internal/templates"
+)
+
+templ head(host string, pageTitle string) {
+    <head>
+        <title>{ pageTitle }</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href={ host+"/static/css/style.css" } rel="stylesheet">
+        <script type="text/javascript" src={ host+"/static/js/htmx.min.js" }></script>
+    </head>
+}
+
+//  @head(pageData.Host, pageData.PageTitle)
+//  @dashboard()
+templ Index(pageData templates.TemplatePageData) {
+    {{ data := reflect.ValueOf(pageData.Data) }}
+    <!DOCTYPE html>
+    <html lang="en">
+            @head(data.FieldByName("Host").Interface().(string), data.FieldByName("PageTitle").Interface().(string))
+        <body>
+            <div>
+                <header>
+                    <nav class="dashboard--navigation"></nav>
+                </header>
+                <div class="dashboard--content-container">
+                    <aside>
+                        <nav>
+                            <ul>
+                                <li><a href="/admin/pages">Pages</a></li>
+                            </ul>
+                        </nav>
+                    </aside>
+                    <main>
+                        <h1>Dashboard</h1>
+                        <p>Welcome to the dashboard</p>
+                    </main>
+                </div>
+            </div>
+        </body>
+    </html>
+}

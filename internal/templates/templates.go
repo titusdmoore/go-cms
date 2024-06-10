@@ -2,6 +2,7 @@
 package templates
 
 import (
+	"fmt"
 	"html/template"
 	"io"
 	"log"
@@ -14,27 +15,59 @@ type Templates struct {
 	templates *template.Template
 }
 
+type Action struct {
+	Action   func(args ...interface{})
+	Priority int32
+}
+
 type TemplatePageData struct {
 	Data interface{}
 
-	actions []interface{}
-	filters []interface{}
+	actions map[string][]Action
+	filters map[string][]Action
 }
 
-func (pd *TemplatePageData) doAction(action string, opts ...interface{}) string {
+func (pd *TemplatePageData) DoAction(action string, opts ...interface{}) string {
 	log.Println("This is running")
-	return "Testing Stuff"
+	message := fmt.Sprintf("Requested to run action: %s\n", action)
+	return message
+}
+
+func (pd *TemplatePageData) AddAction(action string, method func(args ...interface{}), priority int32) {
+	pd.actions[action] = append(pd.actions[action], Action{
+		Action:   method,
+		Priority: priority,
+	})
+}
+
+func NewTemplatePageData() TemplatePageData {
+	actions := make(map[string][]Action)
+	filters := make(map[string][]Action)
+
+	return TemplatePageData{
+		actions: actions,
+		filters: filters,
+	}
+}
+
+func DefaultTemplateData() TemplatePageData {
+	return TemplatePageData{Data: nil}
 }
 
 // Here is what I am thinking
-type PageDataWithActions interface {
-	doAction(action string, opts ...interface{})
-	applyFilter(filter string, opts ...interface{})
-}
+// type PageDataWithActions interface {
+// 	doAction(action string, opts ...interface{})
+// 	applyFilter(filter string, opts ...interface{})
+// }
 
 func (t *Templates) Render(writer io.Writer, name string, data TemplatePageData) error {
 	// FuncMap Needed?
-	return t.templates.ExecuteTemplate(writer, name, data)
+	funcs := template.FuncMap{
+		"DoAction": data.DoAction,
+	}
+	t.templates.Funcs(funcs)
+
+	return t.templates.ExecuteTemplate(writer, name, data.Data)
 }
 
 func InitializeTemplates() *Templates {

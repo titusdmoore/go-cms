@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/titusdmoore/goCms/internal/app"
+	"github.com/titusdmoore/goCms/internal/components"
+	"github.com/titusdmoore/goCms/internal/templates"
 )
 
 type Action struct {
@@ -53,11 +55,17 @@ func main() {
 
 	app.Router.RegisterRoute(app.Config.Router.AdminPath, func(w http.ResponseWriter, r *http.Request) {
 		host := strings.ToLower(strings.Split(r.Proto, "/")[0]) + "://" + r.Host
-
-		app.Templates.Render(w, "index", struct {
+		data := struct {
 			PageTitle string
 			Host      string
-		}{PageTitle: "Welcome to GO CMS", Host: host})
+		}{PageTitle: "Welcome to GO CMS", Host: host}
+		pageData := templates.NewTemplatePageData()
+		pageData.Data = data
+
+		err := components.Index(pageData).Render(r.Context(), w)
+		if err != nil {
+			panic(err)
+		}
 	})
 
 	app.Router.RegisterRoute(app.Config.Router.AdminPath+"/pages", func(w http.ResponseWriter, r *http.Request) {
@@ -72,11 +80,13 @@ func main() {
 				name: "Testing",
 			},
 		}
+		templateData := templates.NewTemplatePageData()
+		templateData.Data = pageData
 
-		app.Templates.Render(w, "table", pageData)
+		app.Templates.Render(w, "table", templateData)
 	})
 	app.Router.RegisterRoute(app.Config.Router.AdminPath+"/pages/new", func(w http.ResponseWriter, r *http.Request) {
-		app.Templates.Render(w, "new", nil)
+		app.Templates.Render(w, "new", templates.DefaultTemplateData())
 	})
 
 	app.Router.Serve(app.Config)
