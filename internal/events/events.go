@@ -32,7 +32,7 @@ func (em *EventManager) ApplyFilter(action string, opts ...interface{}) {
 	}
 }
 
-// Private Helper function to quick insert the event into is corresponding map (actions or filters) will always be sorted
+// Private Helper function to quick insert the event into is corresponding map (actions or filters) will always will be sorted
 func insertEvent(event Event, events []Event) []Event {
 	if len(events) == 0 {
 		return []Event{event}
