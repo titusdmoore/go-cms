@@ -5,6 +5,7 @@ import (
 
 	"github.com/titusdmoore/goCms/internal/config"
 	"github.com/titusdmoore/goCms/internal/db"
+	"github.com/titusdmoore/goCms/internal/events"
 	"github.com/titusdmoore/goCms/internal/router"
 	"github.com/titusdmoore/goCms/internal/templates"
 )
@@ -12,10 +13,11 @@ import (
 var lock = &sync.Mutex{}
 
 type application struct {
-	Database  db.DB
-	Config    config.Config
-	Router    router.Router
-	Templates *templates.Templates
+	Database     db.DB
+	Config       config.Config
+	Router       router.Router
+	Templates    *templates.Templates
+	EventManager events.EventManager
 }
 
 var applicationInstance *application
@@ -50,6 +52,7 @@ func InitializeProject() *application {
 	app.Router = router
 
 	app.Templates = templates.InitializeTemplates()
+	app.EventManager = events.InitializeEventManager()
 
 	return app
 }

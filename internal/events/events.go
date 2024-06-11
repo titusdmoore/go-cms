@@ -1,5 +1,7 @@
 package events
 
+import "slices"
+
 type Event struct {
 	Action   func(args ...interface{})
 	Priority int32
@@ -32,29 +34,30 @@ func (em *EventManager) ApplyFilter(action string, opts ...interface{}) {
 	}
 }
 
+func (em *EventManager) AddAction(action string, priority int32, actionFunc func(args ...interface{})) {
+	em.actions[action] = insertEvent(Event{actionFunc, priority}, em.actions[action])
+}
+
+func (em *EventManager) AddFilter(action string, priority int32, actionFunc func(args ...interface{})) {
+	em.filters[action] = insertEvent(Event{actionFunc, priority}, em.filters[action])
+}
+
 // Private Helper function to quick insert the event into is corresponding map (actions or filters) will always will be sorted
+// Currently this function sucks, so I will probably refactor it later
 func insertEvent(event Event, events []Event) []Event {
 	if len(events) == 0 {
-		return []Event{event}
+		return append(events, event)
 	}
 
-	if len(events) == 1 {
-		if event.Priority < events[0].Priority {
-			return []Event{event, events[0]}
+	idx := 0
+	for events[idx].Priority < event.Priority {
+		if idx+1 == len(events) {
+			idx = len(events)
+			break
 		}
 
-		return []Event{events[0], event}
+		idx++
 	}
 
-	testIndex := (len(events) - 1) / 2
-	left := events[:testIndex]
-	right := events[testIndex:]
-
-	if event.Priority < events[testIndex].Priority {
-		return append(insertEvent(event, left), right...)
-	} else if event.Priority > events[testIndex].Priority {
-		return append(left, insertEvent(event, right)...)
-	}
-
-	return append(append(left, event), right...)
+	return slices.Insert(events, idx, event)
 }
