@@ -12,7 +12,7 @@ import (
 
 var lock = &sync.Mutex{}
 
-type application struct {
+type Application struct {
 	Database     db.DB
 	Config       config.Config
 	Router       router.Router
@@ -20,22 +20,22 @@ type application struct {
 	EventManager events.EventManager
 }
 
-var applicationInstance *application
+var applicationInstance *Application
 
-func GetApp() *application {
+func GetApp() *Application {
 	if applicationInstance == nil {
 		lock.Lock()
 		defer lock.Unlock()
 
 		if applicationInstance == nil {
-			applicationInstance = &application{}
+			applicationInstance = &Application{}
 		}
 	}
 
 	return applicationInstance
 }
 
-func InitializeProject() *application {
+func InitializeProject() *Application {
 	app := GetApp()
 
 	config, err := config.ParseConfig()

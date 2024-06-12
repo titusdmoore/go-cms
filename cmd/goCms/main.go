@@ -2,6 +2,7 @@ package main
 
 import (
 	// "io"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -62,7 +63,7 @@ func main() {
 		pageData := templates.NewTemplatePageData()
 		pageData.Data = data
 
-		err := components.Index(pageData).Render(r.Context(), w)
+		err := components.Index(pageData, app).Render(r.Context(), w)
 		if err != nil {
 			panic(err)
 		}
@@ -87,6 +88,15 @@ func main() {
 	})
 	app.Router.RegisterRoute(app.Config.Router.AdminPath+"/pages/new", func(w http.ResponseWriter, r *http.Request) {
 		app.Templates.Render(w, "new", templates.DefaultTemplateData())
+	})
+
+	app.EventManager.AddAction("header", 10, func(args ...interface{}) {
+		fmt.Println("This is my wonderful action")
+	})
+
+	app.EventManager.AddFilter("header", 10, func(args ...interface{}) (interface{}, error) {
+		value := args[0].(string)
+		return value + " - Filtered", nil
 	})
 
 	app.Router.Serve(app.Config)

@@ -3,7 +3,7 @@ package events
 import "slices"
 
 type Event struct {
-	Action   func(args ...interface{})
+	Action   func(args ...interface{}) (interface{}, error)
 	Priority int32
 }
 
@@ -28,17 +28,26 @@ func (em *EventManager) DoAction(action string, opts ...interface{}) {
 	}
 }
 
-func (em *EventManager) ApplyFilter(action string, opts ...interface{}) {
+// Needs to return the value of the filter, may have to be string according to https://templ.guide/syntax-and-usage/expressions/#functions
+func (em *EventManager) ApplyFilter(action string, opts ...interface{}) interface{} {
+	var err error
+
 	for _, internalAction := range em.actions[action] {
-		internalAction.Action(opts...)
+		// we need to figure out a way to return the values and pass to next in the chain
+		opts, err = internalAction.Action(opts...)
 	}
+
+	return opts[0]
 }
 
 func (em *EventManager) AddAction(action string, priority int32, actionFunc func(args ...interface{})) {
-	em.actions[action] = insertEvent(Event{actionFunc, priority}, em.actions[action])
+	em.actions[action] = insertEvent(Event{func(args ...interface{}) (interface{}, error) {
+		actionFunc(args...)
+		return nil, nil
+	}, priority}, em.actions[action])
 }
 
-func (em *EventManager) AddFilter(action string, priority int32, actionFunc func(args ...interface{})) {
+func (em *EventManager) AddFilter(action string, priority int32, actionFunc func(args ...interface{}) (interface{}, error)) {
 	em.filters[action] = insertEvent(Event{actionFunc, priority}, em.filters[action])
 }
 

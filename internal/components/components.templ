@@ -3,6 +3,7 @@ package components
 import (
     "reflect"
     "github.com/titusdmoore/goCms/internal/templates"
+    "github.com/titusdmoore/goCms/internal/app"
 )
 
 templ head(host string, pageTitle string) {
@@ -17,9 +18,8 @@ templ head(host string, pageTitle string) {
 
 //  @head(pageData.Host, pageData.PageTitle)
 //  @dashboard()
-templ Index(pageData templates.TemplatePageData) {
+templ Index(pageData templates.TemplatePageData, app *app.Application) {
     {{ data := reflect.ValueOf(pageData.Data) }}
-    {{ testingObject := 42 }}
     <!DOCTYPE html>
     <html lang="en">
             @head(data.FieldByName("Host").Interface().(string), data.FieldByName("PageTitle").Interface().(string))
@@ -27,6 +27,8 @@ templ Index(pageData templates.TemplatePageData) {
             <div>
                 <header>
                     <nav class="dashboard--navigation"></nav>
+                    {{ app.EventManager.DoAction("header") }}
+                    { app.EventManager.ApplyFilter("header", "My Awesome String") }
                 </header>
                 <div class="dashboard--content-container">
                     <aside>
@@ -39,7 +41,7 @@ templ Index(pageData templates.TemplatePageData) {
                     <main>
                         <h1>Dashboard</h1>
                         <p>Welcome to the dashboard</p>
-                        { pageData.DoAction("Testing Action", testingObject) }
+                        { app.EventManager.DoAction("empty") }
                     </main>
                 </div>
             </div>
