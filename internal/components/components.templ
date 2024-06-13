@@ -27,8 +27,6 @@ templ Index(pageData templates.TemplatePageData, app *app.Application) {
             <div>
                 <header>
                     <nav class="dashboard--navigation"></nav>
-                    {{ app.EventManager.DoAction("header") }}
-                    { app.EventManager.ApplyFilter("header", "My Awesome String") }
                 </header>
                 <div class="dashboard--content-container">
                     <aside>
@@ -41,7 +39,6 @@ templ Index(pageData templates.TemplatePageData, app *app.Application) {
                     <main>
                         <h1>Dashboard</h1>
                         <p>Welcome to the dashboard</p>
-                        { app.EventManager.DoAction("empty") }
                     </main>
                 </div>
             </div>

@@ -1,6 +1,9 @@
 package events
 
-import "slices"
+import (
+	"fmt"
+	"slices"
+)
 
 type Event struct {
 	Action   func(args ...interface{}) (interface{}, error)
@@ -34,7 +37,11 @@ func (em *EventManager) ApplyFilter(action string, opts ...interface{}) interfac
 
 	for _, internalAction := range em.actions[action] {
 		// we need to figure out a way to return the values and pass to next in the chain
-		opts, err = internalAction.Action(opts...)
+		internalAction.Action(opts...)
+	}
+
+	if err != nil {
+		fmt.Println(err)
 	}
 
 	return opts[0]

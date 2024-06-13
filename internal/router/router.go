@@ -45,7 +45,8 @@ func (router *Router) Serve(config config.Config) {
 
 	log.Printf("Server listening on port %s\n", config.Router.Port)
 
-	server.ListenAndServe()
+	err := server.ListenAndServeTLS("cert/tmp.crt", "cert/tmp.key")
+	log.Fatal(err)
 }
 
 func HandlerWithLogging(next http.Handler) http.Handler {

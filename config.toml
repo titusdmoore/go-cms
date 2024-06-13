@@ -11,5 +11,5 @@ display = false
 log = true
 
 [router]
-port = ":1522"
+port = ":443"
 adminPath = "/admin"

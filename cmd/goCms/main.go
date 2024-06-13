@@ -4,7 +4,6 @@ import (
 	// "io"
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/titusdmoore/goCms/internal/app"
 	"github.com/titusdmoore/goCms/internal/components"
@@ -55,13 +54,24 @@ func main() {
 	// })
 
 	app.Router.RegisterRoute(app.Config.Router.AdminPath, func(w http.ResponseWriter, r *http.Request) {
-		host := strings.ToLower(strings.Split(r.Proto, "/")[0]) + "://" + r.Host
+		host := "https://" + r.Host
 		data := struct {
 			PageTitle string
 			Host      string
 		}{PageTitle: "Welcome to GO CMS", Host: host}
 		pageData := templates.NewTemplatePageData()
 		pageData.Data = data
+
+		push, ok := w.(http.Pusher)
+		fmt.Println(ok)
+		if ok {
+			pushErr := push.Push(host+"/static/css/main.css", nil)
+			pushErr = push.Push(host+"/static/js/htmx.min.js", nil)
+
+			if pushErr != nil {
+				fmt.Println(pushErr)
+			}
+		}
 
 		err := components.Index(pageData, app).Render(r.Context(), w)
 		if err != nil {
@@ -70,7 +80,9 @@ func main() {
 	})
 
 	app.Router.RegisterRoute(app.Config.Router.AdminPath+"/pages", func(w http.ResponseWriter, r *http.Request) {
-		host := strings.ToLower(strings.Split(r.Proto, "/")[0]) + "://" + r.Host
+		host := "https://" + r.Host
+
+		fmt.Println(host)
 
 		pageData := PageData{
 			PageTitle:      "View All Pages",
