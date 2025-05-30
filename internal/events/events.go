@@ -6,7 +6,7 @@ import (
 )
 
 type Event struct {
-	Action   func(args ...interface{}) (interface{}, error)
+	Action   func(args ...any) (any, error)
 	Priority int32
 }
 
@@ -25,14 +25,14 @@ func InitializeEventManager() EventManager {
 	}
 }
 
-func (em *EventManager) DoAction(action string, opts ...interface{}) {
+func (em *EventManager) DoAction(action string, opts ...any) {
 	for _, internalAction := range em.actions[action] {
 		internalAction.Action(opts...)
 	}
 }
 
 // Needs to return the value of the filter, may have to be string according to https://templ.guide/syntax-and-usage/expressions/#functions
-func (em *EventManager) ApplyFilter(action string, opts ...interface{}) interface{} {
+func (em *EventManager) ApplyFilter(action string, opts ...any) any {
 	var err error
 
 	for _, internalAction := range em.actions[action] {
@@ -47,14 +47,14 @@ func (em *EventManager) ApplyFilter(action string, opts ...interface{}) interfac
 	return opts[0]
 }
 
-func (em *EventManager) AddAction(action string, priority int32, actionFunc func(args ...interface{})) {
-	em.actions[action] = insertEvent(Event{func(args ...interface{}) (interface{}, error) {
+func (em *EventManager) AddAction(action string, priority int32, actionFunc func(args ...any)) {
+	em.actions[action] = insertEvent(Event{func(args ...any) (any, error) {
 		actionFunc(args...)
 		return nil, nil
 	}, priority}, em.actions[action])
 }
 
-func (em *EventManager) AddFilter(action string, priority int32, actionFunc func(args ...interface{}) (interface{}, error)) {
+func (em *EventManager) AddFilter(action string, priority int32, actionFunc func(args ...any) (any, error)) {
 	em.filters[action] = insertEvent(Event{actionFunc, priority}, em.filters[action])
 }
 

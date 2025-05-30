@@ -16,18 +16,18 @@ type Templates struct {
 }
 
 type Action struct {
-	Action   func(args ...interface{})
+	Action   func(args ...any)
 	Priority int32
 }
 
 type TemplatePageData struct {
-	Data interface{}
+	Data any
 
 	actions map[string][]Action
 	filters map[string][]Action
 }
 
-func (pd *TemplatePageData) DoAction(action string, opts ...interface{}) string {
+func (pd *TemplatePageData) DoAction(action string, opts ...any) string {
 	log.Println("This is running")
 	for _, opt := range opts {
 		fmt.Printf("Option: %v\n", opt)
@@ -37,7 +37,7 @@ func (pd *TemplatePageData) DoAction(action string, opts ...interface{}) string 
 	return message
 }
 
-func (pd *TemplatePageData) AddAction(action string, method func(args ...interface{}), priority int32) {
+func (pd *TemplatePageData) AddAction(action string, method func(args ...any), priority int32) {
 	pd.actions[action] = append(pd.actions[action], Action{
 		Action:   method,
 		Priority: priority,

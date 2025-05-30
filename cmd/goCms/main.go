@@ -102,11 +102,11 @@ func main() {
 		app.Templates.Render(w, "new", templates.DefaultTemplateData())
 	})
 
-	app.EventManager.AddAction("header", 10, func(args ...interface{}) {
+	app.EventManager.AddAction("header", 10, func(args ...any) {
 		fmt.Println("This is my wonderful action")
 	})
 
-	app.EventManager.AddFilter("header", 10, func(args ...interface{}) (interface{}, error) {
+	app.EventManager.AddFilter("header", 10, func(args ...any) (any, error) {
 		value := args[0].(string)
 		return value + " - Filtered", nil
 	})
